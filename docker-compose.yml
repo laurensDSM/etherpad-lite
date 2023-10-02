@@ -1,0 +1,16 @@
+version: '3'
+services:
+  etherpad:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: etherpad-container
+    environment:
+      - TIMEZONE=Europe/Amsterdam # Stel je gewenste tijdzone in
+      - ETHERPAD_PLUGINS= # Voeg hier je gewenste plugins toe, bijvoorbeeld "ep_codepad ep_author_neat"
+      - INSTALL_ABIWORD=true # Als je AbiWord wilt installeren voor export naar DOC/PDF/ODT
+      - INSTALL_SOFFICE=true # Als je LibreOffice wilt installeren voor export naar DOC/PDF/ODT
+      - EP_UID=5001 # Geef de gewenste gebruikers-ID op (of laat leeg voor de standaardwaarde)
+      - EP_GID=0 # Geef de gewenste groeps-ID op (of laat leeg voor de standaardwaarde)
+    ports:
+      - "9001:9001"
