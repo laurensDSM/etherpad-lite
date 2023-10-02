@@ -27,6 +27,7 @@ pipeline {
                     // Navigeer naar de Jenkins-workspace
                     dir("${WORKSPACE}") {
                         // Voer npm install uit
+                        sh 'npm init'
                         sh 'npm install'
                     }
                 }
