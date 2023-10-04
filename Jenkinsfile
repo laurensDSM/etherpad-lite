@@ -43,6 +43,18 @@ pipeline {
                
             }
         }
+
+        stage('DAST SCAN') {
+            // Voer de ZAP-scan uit            
+            steps {
+                sh 'rm nuclei.txt'
+                sh 'echo "DAST SCAN"'
+                sh 'docker pull projectdiscovery/nuclei:latest'
+                sh 'docker run --rm -it projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
+            }
+            archiveArtifacts artifacts: 'nuclei.txt', allowEmptyArchive: true
+        }
+        
         stage('Install npm dependencies') {
             steps {
                 script {
@@ -105,8 +117,8 @@ pipeline {
                     alwaysLinkToLastBuild: false,
                     keepAll: false,
                     reportDir: '.',
-                    reportFiles: 'eslint.xml',
-                    reportName: 'Eslint Report',
+                    reportFiles: 'nuclei.txt',
+                    reportName: 'Nuclei',
                     reportTitles: '',
                     useWrapperFileDirectly: true
                 ]
