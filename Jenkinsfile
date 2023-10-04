@@ -21,6 +21,32 @@ pipeline {
                     dependencyCheckPublisher(pattern: 'dependency-check-report.xml')
                 }
             }
+        stage('Install npm dependencies') {
+            steps {
+                script {
+                    // Navigeer naar de Jenkins-workspace
+                    dir("${WORKSPACE}") {
+                        // Voer npm install uit
+                        sh 'npm init -y'
+
+                        sh 'npm install'
+                    }
+                }
+            }
+        }
+
+        stage ('Trufflehog Check') {
+            steps {
+                sh 'docker pull trufflesecurity/trufflehog:latest'
+                sh 'rm trufflehog_results.json || true'
+                sh 'rm trufflehog_results.html || true'
+                sh 'docker run -v "$WORKSPACE:/pwd" trufflesecurity/trufflehog:latest filesystem /pwd --json 2>&1 | grep -v "unable to read file for MIME type detection: EOF" > trufflehog_results.json'
+                sh './convert_json_to_html.sh'
+                sh 'rm etherpad-lite/package-lock.json || true'
+                sh 'rm etherpad-lite/package.json || true'
+                archiveArtifacts artifacts: 'trufflehog_results.html', allowEmptyArchive: true
+            }
+        }
 
         stage('Build') {
             steps {
@@ -49,36 +75,13 @@ pipeline {
                 sh 'rm nuclei.txt || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
-                sh 'docker run --rm -it projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
+                sh 'docker run --rm  projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
                 archiveArtifacts artifacts: 'nuclei.txt', allowEmptyArchive: true
 
             }
         }
         
-        stage('Install npm dependencies') {
-            steps {
-                script {
-                    // Navigeer naar de Jenkins-workspace
-                    dir("${WORKSPACE}") {
-                        // Voer npm install uit
-                        sh 'npm init -y'
-
-                        sh 'npm install'
-                    }
-                }
-            }
-        }
-
-        stage ('Trufflehog Check') {
-            steps {
-                sh 'docker pull trufflesecurity/trufflehog:latest'
-                sh 'rm trufflehog_results.json || true'
-                sh 'rm trufflehog_results.html || true'
-                sh 'docker run -v "$WORKSPACE:/pwd" trufflesecurity/trufflehog:latest filesystem /pwd --json 2>&1 | grep -v "unable to read file for MIME type detection: EOF" > trufflehog_results.json'
-                sh './convert_json_to_html.sh'
-                archiveArtifacts artifacts: 'trufflehog_results.html', allowEmptyArchive: true
-            }
-        }
+        
 
     }
     post {
