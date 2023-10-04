@@ -75,7 +75,7 @@ pipeline {
                 sh 'rm nuclei.txt || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
-                sh 'docker run --rm  projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
+                sh 'docker run --rm  projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/'
                 archiveArtifacts artifacts: 'nuclei.txt', allowEmptyArchive: true
 
             }
