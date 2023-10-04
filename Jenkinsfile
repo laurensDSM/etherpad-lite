@@ -46,7 +46,7 @@ pipeline {
 
         stage('DAST SCAN') {
             steps {
-                sh 'rm nuclei.txt'
+                sh 'rm nuclei.txt || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
                 sh 'docker run --rm -it projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
