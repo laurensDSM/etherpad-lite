@@ -48,12 +48,18 @@ pipeline {
         stage('DAST SCAN') {
             steps {
                 sh 'rm nuclei.txt || true'
-                sh 'rm nuclei.html || true'
+                sh 'rm nuclei_json.txt || true'
+                sh 'rm nuclei1.html || true'
+                sh 'rm nuclei2.html || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
-                sh 'docker run --rm  projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
+                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ --no-color > nuclei.txt'
+                sh 'docker run --rm projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ --no-color -j  > nuclei_json.txt'
                 sh './convert_nuclei.sh'
-                archiveArtifacts artifacts: 'nuclei.html', allowEmptyArchive: true
+                sh './convert_nuclei_json.sh'
+                archiveArtifacts artifacts: 'nuclei1.html', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'nuclei2.html', allowEmptyArchive: true
+
 
             }
         }
@@ -122,8 +128,20 @@ pipeline {
                     alwaysLinkToLastBuild: false,
                     keepAll: false,
                     reportDir: '.',
-                    reportFiles: 'nuclei.html',
-                    reportName: 'Nuclei',
+                    reportFiles: 'nuclei1.html',
+                    reportName: 'Nuclei Basic ',
+                    reportTitles: '',
+                    useWrapperFileDirectly: true
+                ]
+            )
+            publishHTML(
+                target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: false,
+                    reportDir: '.',
+                    reportFiles: 'nuclei2.html',
+                    reportName: 'Nuclei Extend ',
                     reportTitles: '',
                     useWrapperFileDirectly: true
                 ]
