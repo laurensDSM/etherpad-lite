@@ -48,10 +48,12 @@ pipeline {
         stage('DAST SCAN') {
             steps {
                 sh 'rm nuclei.txt || true'
+                sh 'rm nuclei.html || true'
                 sh 'echo "DAST SCAN"'
                 sh 'docker pull projectdiscovery/nuclei:latest'
                 sh 'docker run --rm  projectdiscovery/nuclei:latest -u http://192.168.84.129:9001/ > nuclei.txt'
-                archiveArtifacts artifacts: 'nuclei.txt', allowEmptyArchive: true
+                sh './convert_nuclei.sh'
+                archiveArtifacts artifacts: 'nuclei.html', allowEmptyArchive: true
 
             }
         }
@@ -120,7 +122,7 @@ pipeline {
                     alwaysLinkToLastBuild: false,
                     keepAll: false,
                     reportDir: '.',
-                    reportFiles: 'nuclei.txt',
+                    reportFiles: 'nuclei.html',
                     reportName: 'Nuclei',
                     reportTitles: '',
                     useWrapperFileDirectly: true
