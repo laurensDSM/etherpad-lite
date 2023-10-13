@@ -11,7 +11,8 @@ pipeline {
             steps{
                 script {
                     try {
-                        sh 'docker system prune -a --volume --force'
+                        sh 'docker system prune -a --force'
+                        sh 'docker volume prune -f'
                     } catch (Exception e) {
                         currentBuild.result = 'SUCCESS'
                         echo "Error occurred during cleanup, but continuing the pipeline."
