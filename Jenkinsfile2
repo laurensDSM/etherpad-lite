@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment {
+        GITHUB_TOKEN=credentials('github-token')
+        IMAGE_NAME='laurensdesmedt/etherpad'
+        IMAGE_VERSION="1.0.0"
+    }
+    
+    stages {
+        stage('cleanup') {
+            steps{
+                sh 'docker system prune -a --volume --force'
+            }
+        }
+        stage('build image') {
+            steps{
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
+        stage('login to GHCR') {
+            steps{
+                sh 'echo $GITHUB_TOKEN_PSW | docker login ghcr.io -u $GITHUB_TOKEN_USR --password-stdin'
+            }
+        }
+        stage('tag image') {
+            steps{
+                sh 'docker tag $IMAGE_NAME:$IMAGE_VERSION ghcr.io/$IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
+        stage('push image') {
+            steps{
+                sh 'docker push ghcr.io/$IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
