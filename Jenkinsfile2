@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         GITHUB_TOKEN=credentials('github-token')
-        IMAGE_NAME='laurensdesmedt/etherpad-lite'
+        IMAGE_NAME='etherpad-lite'
         IMAGE_VERSION="1.0.0"
         COSIGN_PASSWORD=credentials('cosign-password')
         COSIGN_PRIVATE_KEY=credentials('cosign-private-key')
