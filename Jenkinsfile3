@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+    environment {
+        IMAGE_NAME='laurensdesmedt/etherpad-lite'
+        IMAGE_VERSION="1.0.0"
+        COSIGN_PUBLIC_KEY=credentials('cosign-public-key')
+    }
+    
+    stages {
+        stage('verify the container image') {
+            steps{
+                sh 'cosign version'
+                sh 'cosign verify --key $COSIGN_PUBLIC_KEY ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
+    }
+}
