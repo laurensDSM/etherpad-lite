@@ -4,6 +4,8 @@ pipeline {
         GITHUB_TOKEN=credentials('github-token')
         IMAGE_NAME='laurensdesmedt/etherpad-lite'
         IMAGE_VERSION="1.0.0"
+        COSIGN_PASSWORD=credentials('cosign-password')
+        COSIGN_PRIVATE_KEY=credentials('cosign-private-key')
     }
     
     stages {
@@ -25,6 +27,12 @@ pipeline {
         stage('push image') {
             steps{
                 sh 'docker push ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION'
+            }
+        }
+        stage('sign the container image') {
+            steps{
+                sh 'cosign version'
+                sh 'cosign sign --key $COSIGN_PRIVATE_KEY ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION'
             }
         }
     }
