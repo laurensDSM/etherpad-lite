@@ -11,7 +11,7 @@ pipeline {
             steps{
                 script {
                     try {
-                        sh 'docker system prune -a --force'
+                        sh 'docker system prune -af'
                         sh 'docker volume prune -f'
                     } catch (Exception e) {
                         currentBuild.result = 'SUCCESS'
