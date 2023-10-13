@@ -24,7 +24,7 @@ pipeline {
         }
         stage('push image') {
             steps{
-                sh 'docker push ghcr.io/laurensDSM/$IMAGE_NAME:$IMAGE_VERSION'
+                sh 'docker push ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION'
             }
         }
     }
