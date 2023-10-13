@@ -7,19 +7,6 @@ pipeline {
     }
     
     stages {
-        stage('cleanup') {
-            steps{
-                script {
-                    try {
-                        sh 'docker system prune -af'
-                        sh 'docker volume prune -f'
-                    } catch (Exception e) {
-                        currentBuild.result = 'SUCCESS'
-                        echo "Error occurred during cleanup, but continuing the pipeline."
-                    }
-                }
-            }
-        }
         stage('build image') {
             steps{
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_VERSION'
