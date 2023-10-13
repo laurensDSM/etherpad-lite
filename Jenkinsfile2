@@ -9,11 +9,13 @@ pipeline {
     stages {
         stage('cleanup') {
             steps{
-                try {
-                    sh 'docker system prune -a --volume --force'
-                } catch (Exception e) {
-                    currentBuild.result = 'SUCCESS'
-                    echo "Error occurred during cleanup, but continuing the pipeline."
+                script {
+                    try {
+                        sh 'docker system prune -a --volume --force'
+                    } catch (Exception e) {
+                        currentBuild.result = 'SUCCESS'
+                        echo "Error occurred during cleanup, but continuing the pipeline."
+                    }
                 }
             }
         }
