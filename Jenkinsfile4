@@ -40,13 +40,17 @@ pipeline {
                 sh "docker push ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION"
             }
         }
-
-        stage('Sign Docker Image with Notary') {
+        
+        stage ('Notation Login') {
             steps {
-                script {
-                    // Onderteken het Docker-image met Docker Content Trust (DCT)
-                    sh "docker trust sign ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION"
-                }
+                sh 'echo $GITHUB_TOKEN_PSW | notation login ghcr.io -u $GITHUB_TOKEN_USR --password-stdin'
+            }
+        }
+
+        stage ('Image Signing') {
+            steps {
+                sh 'notation cert generate-test --default "etherpad.org"'
+                sh 'notation sign ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION'
             }
         }
     }
