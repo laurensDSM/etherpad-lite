@@ -9,13 +9,13 @@ pipeline {
     }
 
     stages {
-        stage('Initialize Docker Content Trust') {
-            steps {
-                script {
-                    sh "docker trust key generate etherpad"
-                }
-            }
-        }
+        // stage('Initialize Docker Content Trust') {
+        //     steps {
+        //         script {
+        //             sh "docker trust key generate etherpad"
+        //         }
+        //     }
+        // }
 
         stage('Build Image') {
             steps {
