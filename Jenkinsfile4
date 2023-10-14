@@ -12,7 +12,7 @@ pipeline {
         stage('Initialize Docker Content Trust') {
             steps {
                 script {
-                    sh "docker trust key generate ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION"
+                    sh "docker trust key generate etherpad"
                 }
             }
         }
