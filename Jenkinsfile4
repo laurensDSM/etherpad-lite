@@ -3,9 +3,7 @@ pipeline {
     environment {
         GITHUB_TOKEN = credentials('github-token')
         IMAGE_NAME = 'etherpad-lite'
-        IMAGE_VERSION = '1.0.0'
-        DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE = credentials('dct-repo-passphrase')
-        DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE = credentials('dct-root-passphrase')
+        IMAGE_VERSION = '2.0.0'
     }
 
     stages {
