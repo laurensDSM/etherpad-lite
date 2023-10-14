@@ -2,22 +2,14 @@ pipeline {
     agent any
     environment {
         GITHUB_TOKEN = credentials('github-token')
-        IMAGE_NAME = 'etherpad-lite'
-        IMAGE_VERSION = '2.0.0'
+        IMAGE_NAME = 'laurensdsm/etherpad-lite'
+        IMAGE_VERSION = 'latest'
     }
 
     stages {
-        // stage('Initialize Docker Content Trust') {
-        //     steps {
-        //         script {
-        //             sh "docker trust key generate etherpad"
-        //         }
-        //     }
-        // }
-
         stage('Build Image') {
             steps {
-                sh "docker build -t $IMAGE_NAME:$IMAGE_VERSION ."
+                sh "docker compose build"
             }
         }
 
@@ -29,13 +21,13 @@ pipeline {
 
         stage('Tag Image') {
             steps {
-                sh "docker tag $IMAGE_NAME:$IMAGE_VERSION ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION"
+                sh "docker tag $IMAGE_NAME:$IMAGE_VERSION ghcr.io/$IMAGE_NAME:$IMAGE_VERSION"
             }
         }
 
         stage('Push Image') {
             steps {
-                sh "docker push ghcr.io/laurensdsm/$IMAGE_NAME:$IMAGE_VERSION"
+                sh "docker push ghcr.io/$IMAGE_NAME:$IMAGE_VERSION"
             }
         }
         

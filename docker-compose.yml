@@ -14,3 +14,4 @@ services:
       - EP_GID=0 # Geef de gewenste groeps-ID op (of laat leeg voor de standaardwaarde)
     ports:
       - "9001:9001"
+    image: laurensdsm/etherpad-lite:latest
